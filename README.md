@@ -1,57 +1,56 @@
-# 🎹 Muse Garden
+# <svg viewBox="0 0 830 781" width="32" height="32" style="vertical-align: middle; display: inline-block; margin-right: 8px;"><path d="M0 0 C4.69049218 4.2017206 7.64889509 8.9628319 10.8125 14.375 C11.34093506 15.27130127 11.86937012 16.16760254 12.41381836 17.09106445 C13.95482835 19.72048175 15.48075986 22.35795619 17 25 C17.38091797 25.65822754 17.76183594 26.31645508 18.15429688 26.99462891 C47.79674621 78.69822935 62.20567878 140.58597284 62.25 199.875 C62.25101212 201.10822495 62.25101212 201.10822495 62.25204468 202.36636353 C62.14492413 285.53495965 32.86809494 367.05591474 -19 432 C-20.10408203 433.39412109 -20.10408203 433.39412109 -21.23046875 434.81640625 C-26.07849871 440.84855681 -31.19455307 446.57450327 -36.4609375 452.23828125 C-38.45728452 454.40969255 -40.36541029 456.60866006 -42.25 458.875 C-47.39299258 464.80732477 -53.3545982 469.98439616 -59.13378906 475.28222656 C-60.81616285 476.83078516 -62.48517067 478.39191889 -64.1484375 479.9609375 C-70.89732928 486.27558423 -77.9334548 492.01650573 -85.25732422 497.64257812 C-86.92365262 498.94053076 -88.56080336 500.26694117 -90.19140625 501.609375 C-100.84240947 510.31970873 -112.36141582 517.68629608 -124 525 C-124.73557129 525.4626123 -125.47114258 525.92522461 -126.22900391 526.40185547 C-176.4303839 557.64504725 -232.80813743 576.04364922 -291 585 C-292.36214907 585.22423069 -293.72416178 585.44929419 -295.0859375 585.67578125 C-357.42164179 595.19323727 -426.13503942 589.07976311 -485.73828125 568.75927734 C-488.11846023 567.96023194 -490.50977324 567.20569584 -492.90625 566.45703125 C-507.33246149 561.89362375 -521.1714656 556.12169542 -535 550 C-535.82016602 549.6376123 -536.64033203 549.27522461 -537.48535156 548.90185547 C-555.09414751 541.04886956 -571.84383483 531.49757491 -588 521 C-588.64308105 520.58363281 -589.28616211 520.16726563 -589.94873047 519.73828125 C-597.91875871 514.5590577 -605.68912231 509.1840643 -613.21582031 503.37207031 C-615.37252095 501.71352385 -617.54237645 500.07269343 -619.7109375 498.4296875 C-621.37028579 497.16210491 -623.02914021 495.89387555 -624.6875 494.625 C-625.89273315 493.71379395 -625.89273315 493.71379395 -627.12231445 492.78417969 C-627.86956787 492.20829102 -628.61682129 491.63240234 -629.38671875 491.0390625 C-630.05920654 490.52553223 -630.73169434 490.01200195 -631.42456055 489.48291016 C-633 488 -633 488 -634 485 C-595.75000001 455.75000001 -595.75000001 455.75000001 -593.62402344 454.12426758 C-592.21059349 453.04339983 -590.79718196 451.96250799 -589.38378906 450.8815918 C-585.79275299 448.13533495 -582.2013752 445.38952697 -578.609375 442.64453125 C-572.23318164 437.77129775 -565.85893186 432.8957448 -559.5 428 C-552.40936531 422.54091682 -545.29963842 417.106922 -538.18945312 411.67333984 C-534.62571009 408.94966737 -531.06288197 406.2247987 -527.5 403.5 C-523.20359801 400.21422442 -518.90697288 396.92874259 -514.609375 393.64453125 C-508.23318164 388.77129775 -501.85893186 383.8957448 -495.5 379 C-488.40936531 373.54091682 -481.29963842 368.106922 -474.18945312 362.67333984 C-470.62571009 359.94966737 -467.06288197 357.2247987 -463.5 354.5 C-459.20359801 351.21422442 -454.90697288 347.92874259 -450.609375 344.64453125 C-444.23318164 339.77129775 -437.85893186 334.8957448 -431.5 330 C-424.40936531 324.54091682 -417.29963842 319.106922 -410.18945312 313.67333984 C-406.62571009 310.94966737 -403.06288197 308.2247987 -399.5 305.5 C-395.20359801 302.21422442 -390.90697288 298.92874259 -386.609375 295.64453125 C-380.23318164 290.77129775 -373.85893186 285.8957448 -367.5 281 C-360.40936531 275.54091682 -353.29963842 270.106922 -346.18945312 264.67333984 C-342.62571009 261.94966737 -339.06288197 259.2247987 -335.5 256.5 C-331.20359801 253.21422442 -326.90697288 249.92874259 -322.609375 246.64453125 C-316.23318164 241.77129775 -309.85893186 236.8957448 -303.5 232 C-296.40936531 226.54091682 -289.29963842 221.106922 -282.18945312 215.67333984 C-278.62571009 212.94966737 -275.06288197 210.2247987 -271.5 207.5 C-267.20359801 204.21422442 -262.90697288 200.92874259 -258.609375 197.64453125 C-252.23318164 192.77129775 -245.85893186 187.8957448 -239.5 183 C-232.40936531 177.54091682 -225.29963842 172.106922 -218.18945312 166.67333984 C-214.62571009 163.94966737 -211.06288197 161.2247987 -207.5 158.5 C-203.20359801 155.21422442 -198.90697288 151.92874259 -194.609375 148.64453125 C-188.23318164 143.77129775 -181.85893186 138.8957448 -175.5 134 C-168.40936531 128.54091682 -161.29963842 123.106922 -154.18945312 117.67333984 C-150.62571009 114.94966737 -147.06288197 112.2247987 -143.5 109.5 C-139.20359801 106.21422442 -134.90697288 102.92874259 -130.609375 99.64453125 C-124.23318164 94.77129775 -117.85893186 89.8957448 -111.5 85 C-104.40936531 79.54091682 -97.29963842 74.106922 -90.18945312 68.67333984 C-86.62571009 65.94966737 -83.06288197 63.2247987 -79.5 60.5 C-75.20359801 57.21422442 -70.90697288 53.92874259 -66.609375 50.64453125 C-60.23318164 45.77129775 -53.85893186 40.8957448 -47.5 36 C-41.15427527 31.11442337 -34.79350162 26.24870137 -28.4296875 21.38671875 C-25.41134378 19.08034983 -22.39605192 16.77006455 -19.3828125 14.45703125 C-18.62774414 13.87800049 -17.87267578 13.29896973 -17.09472656 12.70239258 C-15.66108577 11.60287902 -14.22809596 10.50251591 -12.79589844 9.40112305 C-8.59029089 6.17782084 -4.32776031 3.05753456 0 0 Z" fill="currentColor"/></svg> Muse Garden
 
-Brainstorm music ideas directly inside Obsidian. Browse your FL Studio or audio project folders, tag and search tracks, and drop Project/Audio nodes onto Obsidian Canvas with a built-in player.
+Brainstorm music ideas directly inside Obsidian. Browse your audio project folders, tag and search tracks, and place Project/Audio nodes onto Obsidian Canvas with a built-in player.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F4F4224N1H)
 
 ---
 
-**Muse Garden** is built for music producers, sound designers, and composers who want a seamless way to organize their music ideas, tracks, and project files alongside their notes. 
+Muse Garden is built for music producers, sound designers, and composers who want to organize their music ideas, tracks, and project files alongside their notes. 
 
-By linking your external export folders to Obsidian, you can browse, tag, search, and visually sketch out music tracks on Obsidian Canvas without cluttering your vault.
+By linking your external folders to Obsidian, you can browse, tag, search, and visually sketch out music tracks on Obsidian Canvas.
 
-## ✨ Features
+## Features
 
-- **📂 Folder Explorer Sidebar**: Browse your external music project folders directly within Obsidian using a custom dedicated sidebar.
-- **🏷️ Shared Tag Management**: Apply tags to your audio tracks and project folders. Tags are shared globally across audio and project elements, allowing for unified organization.
-- **🔍 Advanced Tag Filtering**: Search and filter tracks by tags or name, with support for complex filter toggles in the bottom toolbar.
-- **🎛️ Bottom Audio Player**: A built-in, persistent audio player at the bottom of the workspace to listen to your tracks as you take notes.
-- **🎨 Canvas Integration**: Drag tracks or folders directly from the Explorer sidebar onto your Obsidian Canvas to create visual nodes.
-- **🔗 Canvas Audio Sync**: Interactive audio node embeds on the Canvas sync directly to the shared bottom player for unified playback controls.
-- **🛡️ Secure Symlink Watcher**: Watches external directories securely by symlinking them into your vault so Obsidian can index and read the audio files without importing large assets.
+- **Folder Explorer Sidebar**: Browse your external music project folders directly within Obsidian using a custom sidebar.
+- **Shared Tag Management**: Apply tags to your audio tracks and project folders. Tags are shared globally across audio and project elements.
+- **Advanced Tag Filtering**: Search and filter tracks by tags or name, with support for complex filter toggles in the bottom toolbar.
+- **Bottom Audio Player**: A built-in, persistent audio player at the bottom of the workspace to listen to your tracks.
+- **Canvas Integration**: Drag tracks or folders directly from the Explorer sidebar onto your Obsidian Canvas.
+- **Canvas Audio Sync**: Interactive audio node embeds on the Canvas sync directly to the shared bottom player.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Add your Watch Folder
-Open Obsidian Settings, navigate to **Muse Garden**, and add the path to your external audio export folder (e.g., your FL Studio exports directory). The plugin will securely link this directory into your vault.
+Open Obsidian Settings, navigate to Muse Garden, and add the path to your external audio export folder.
 
 ### 2. Open the Explorer
-Click the **Muse Garden logo** icon in the ribbon toolbar (or use the command `Open MuseGarden explorer`) to open the explorer sidebar.
+Click the Muse Garden logo icon in the ribbon toolbar (or use the command `Open MuseGarden explorer`) to open the explorer sidebar.
 
 ### 3. Tag and Search
 Right-click any folder or audio file in the explorer to add or remove tags. Use the search bar at the top to filter files by name, or use the bottom filter menu to show only files with specific tags.
 
 ### 4. Create Visual Canvas Boards
-Open an Obsidian Canvas, and drag-and-drop tracks or folders from the Muse Garden explorer onto the Canvas. They will create interactive nodes with player widgets.
+Open an Obsidian Canvas, and drag-and-drop tracks or folders from the Muse Garden explorer onto the Canvas.
 
 ---
 
-## 🛠️ Installation
+## Installation
 
 ### Community Plugins (Pending Approval)
-Search for **Muse Garden** in the Obsidian Community Plugins settings, click Install, and enable the plugin.
+Search for Muse Garden in the Obsidian Community Plugins settings, click Install, and enable the plugin.
 
 ### Manual Installation
 1. Download the latest release from the [Releases](https://github.com/KaeBee2003/muse-garden/releases) page (you will need `main.js`, `manifest.json`, and `styles.css`).
 2. Create a folder named `muse-garden` in your vault's plugin directory: `<vault>/.obsidian/plugins/muse-garden/`.
 3. Copy the three files into that folder.
-4. Open Obsidian Settings, go to **Community Plugins**, and enable **Muse Garden**.
+4. Open Obsidian Settings, go to Community Plugins, and enable Muse Garden.
 
 ---
 
-## 💖 Support the Project
+## Support the Project
 
 If Muse Garden helps you in your music production workflow, consider supporting the development!
 
@@ -59,4 +58,4 @@ If Muse Garden helps you in your music production workflow, consider supporting 
 
 ---
 
-*Made with 🎵 for music creators.*
+*Made for music creators.*
