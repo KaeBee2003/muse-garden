@@ -1,0 +1,1149 @@
+/* ===== Explorer sidebar ===== */
+
+.muse-garden-explorer {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+}
+
+/* ── Explorer toolbar (search + Manage Tags button) ── */
+.muse-explorer-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 10px 4px;
+	flex-shrink: 0;
+}
+
+.muse-search-wrap {
+	flex: 1;
+}
+
+.muse-search-input {
+	width: 100%;
+	padding: 5px 10px;
+	border-radius: 6px;
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: var(--font-ui-small);
+}
+
+.muse-search-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+}
+
+/* Manage Tags button */
+.muse-manage-tags-btn {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 5px 8px;
+	border-radius: 6px;
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-secondary);
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	cursor: pointer;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.muse-manage-tags-btn:hover {
+	background: var(--background-modifier-hover);
+	color: var(--text-normal);
+}
+
+.muse-manage-tags-btn svg {
+	width: 13px;
+	height: 13px;
+}
+
+.muse-manage-tags-label {
+	font-size: var(--font-ui-smaller);
+}
+
+/* ── Tag filter chip row ── */
+.muse-tag-filter-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px;
+	padding: 2px 10px 6px;
+	flex-shrink: 0;
+	min-height: 0;
+}
+
+.muse-filter-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: var(--font-ui-smaller);
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	cursor: default;
+}
+
+.muse-filter-chip-remove {
+	cursor: pointer;
+	opacity: 0.7;
+	font-size: 11px;
+	line-height: 1;
+}
+
+.muse-filter-chip-remove:hover {
+	opacity: 1;
+}
+
+.muse-filter-add-btn {
+	font-size: var(--font-ui-smaller);
+	padding: 2px 8px;
+	border-radius: 999px;
+	border: 1px dashed var(--background-modifier-border);
+	background: transparent;
+	color: var(--text-muted);
+	cursor: pointer;
+}
+
+.muse-filter-add-btn:hover {
+	border-color: var(--interactive-accent);
+	color: var(--text-normal);
+}
+
+/* ── Track list ── */
+.muse-track-list {
+	flex: 1;
+	overflow-y: auto;
+	padding: 4px 0;
+}
+
+.muse-empty-state {
+	padding: 20px;
+	text-align: center;
+	color: var(--text-faint);
+	font-size: var(--font-ui-small);
+}
+
+/* ── Explorer footer settings button ── */
+.muse-explorer-footer {
+	padding: 8px 10px;
+	border-top: 1px solid var(--background-modifier-border);
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-shrink: 0;
+	background: var(--background-secondary-alt);
+}
+
+.muse-explorer-settings-btn {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+	padding: 6px 10px;
+	border-radius: 6px;
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-primary);
+	color: var(--text-normal);
+	cursor: pointer;
+	font-size: var(--font-ui-small);
+	transition: background 0.1s;
+}
+
+.muse-explorer-settings-btn:hover {
+	background: var(--background-modifier-hover);
+}
+
+.muse-explorer-settings-btn svg {
+	width: 14px;
+	height: 14px;
+	color: var(--text-muted);
+}
+
+.muse-explorer-settings-label {
+	font-weight: 500;
+}
+
+/* ── Folder rows ── */
+.muse-folder-row {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 4px;
+	padding: 4px 8px;
+	padding-left: calc(8px + var(--muse-depth, 0) * 16px);
+	cursor: pointer;
+	border-radius: 4px;
+	user-select: none;
+}
+
+.muse-folder-row:hover {
+	background: var(--background-modifier-hover);
+}
+
+.muse-folder-row.is-dragging {
+	opacity: 0.5;
+}
+
+.muse-folder-chevron,
+.muse-folder-icon {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+	color: var(--text-muted);
+}
+
+.muse-folder-chevron svg,
+.muse-folder-icon svg {
+	width: 13px;
+	height: 13px;
+}
+
+.muse-folder-name {
+	flex: 1;
+	font-size: var(--font-ui-small);
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.muse-folder-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3px;
+	width: 100%;
+	padding-left: calc(13px + 13px + 8px);
+}
+
+/* ── Track rows ── */
+.muse-track-row {
+	display: flex;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	gap: 4px;
+	padding: 4px 8px;
+	padding-left: calc(8px + var(--muse-depth, 0) * 16px);
+	cursor: pointer;
+	border-radius: 4px;
+	user-select: none;
+}
+
+.muse-track-row:hover {
+	background: var(--background-modifier-hover);
+}
+
+.muse-track-row.is-dragging {
+	opacity: 0.5;
+}
+
+.muse-track-icon {
+	flex-shrink: 0;
+	width: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-muted);
+	padding-top: 1px;
+}
+
+.muse-track-icon svg {
+	width: 11px;
+	height: 11px;
+}
+
+.muse-track-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.muse-track-name {
+	font-size: var(--font-ui-small);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.muse-track-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3px;
+	margin-top: 3px;
+}
+
+/* ── Shared tag chip ── */
+.muse-tag-chip {
+	font-size: 10px;
+	padding: 1px 7px;
+	border-radius: 999px;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	opacity: 0.85;
+}
+
+
+/* ===== Tag Manager Modal ===== */
+
+.muse-tag-manager-modal .modal-content {
+	padding: 20px;
+	min-width: 380px;
+}
+
+.muse-tm-heading {
+	margin: 0 0 16px;
+	font-size: var(--font-ui-medium);
+	font-weight: 600;
+}
+
+.muse-tm-section {
+	margin-bottom: 20px;
+}
+
+.muse-tm-label {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+	margin: 0 0 8px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.muse-tm-empty {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-faint);
+}
+
+.muse-tm-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.muse-tm-chip {
+	font-size: var(--font-ui-smaller);
+	padding: 3px 10px;
+	border-radius: 999px;
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	color: var(--text-muted);
+	cursor: pointer;
+	transition: background 0.1s, color 0.1s, border-color 0.1s;
+}
+
+.muse-tm-chip:hover {
+	background: var(--background-modifier-hover);
+	color: var(--text-normal);
+}
+
+.muse-tm-chip.is-active {
+	background: var(--interactive-accent);
+	border-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	opacity: 1;
+}
+
+.muse-tm-add-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.muse-tm-input {
+	flex: 1;
+	padding: 5px 10px;
+	border-radius: 6px;
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: var(--font-ui-small);
+}
+
+.muse-tm-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+}
+
+.muse-tm-btn {
+	padding: 5px 14px;
+	border-radius: 6px;
+	border: none;
+	background: var(--interactive-normal);
+	color: var(--text-normal);
+	font-size: var(--font-ui-small);
+	cursor: pointer;
+}
+
+.muse-tm-btn.mod-cta {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.muse-tm-manage-list {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.muse-tm-manage-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 6px;
+	border-radius: 6px;
+}
+
+.muse-tm-manage-row:hover {
+	background: var(--background-modifier-hover);
+}
+
+.muse-tm-manage-name {
+	flex: 1;
+	font-size: var(--font-ui-small);
+}
+
+.muse-tm-inline-input {
+	flex: 1;
+	padding: 2px 6px;
+	border-radius: 4px;
+	border: 1px solid var(--interactive-accent);
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: var(--font-ui-small);
+}
+
+.muse-tm-icon-btn {
+	flex-shrink: 0;
+}
+
+.muse-tm-icon-btn.mod-warning:hover {
+	color: var(--text-error) !important;
+}
+
+
+
+/* ===== Dynamic layout offsets when Muse player is active ===== */
+body.has-muse-player-bar .status-bar {
+	bottom: 46px !important;
+}
+
+body.has-muse-player-bar .canvas-controls,
+body.has-muse-player-bar .canvas-card-menu {
+	bottom: 61px !important;
+}
+
+.muse-player-close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 4px;
+	border: none;
+	background: transparent;
+	color: var(--text-muted);
+	cursor: pointer;
+	flex-shrink: 0;
+	padding: 0;
+	transition: background 0.1s, color 0.1s;
+}
+
+.muse-player-close:hover {
+	background: var(--background-modifier-hover);
+	color: var(--text-normal);
+}
+
+.muse-player-close svg {
+	width: 14px;
+	height: 14px;
+}
+
+/* ── Modal Tabs & Textareas ── */
+.muse-modal-tabs {
+	display: flex;
+	gap: 12px;
+	border-bottom: 1px solid var(--background-modifier-border);
+	margin-bottom: 16px;
+}
+
+.muse-modal-tab {
+	padding: 8px 12px;
+	cursor: pointer;
+	color: var(--text-muted);
+	font-weight: 500;
+	font-size: var(--font-ui-small);
+	border-bottom: 2px solid transparent;
+	transition: color 0.1s, border-bottom-color 0.1s;
+}
+
+.muse-modal-tab:hover {
+	color: var(--text-normal);
+}
+
+.muse-modal-tab.is-active {
+	color: var(--interactive-accent);
+	border-bottom-color: var(--interactive-accent);
+}
+
+.muse-modal-tab-content {
+	padding: 8px 0;
+}
+
+.muse-tm-textarea {
+	width: 100%;
+	height: 100px;
+	margin-top: 8px;
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-small);
+	background: var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	color: var(--text-normal);
+	resize: vertical;
+}
+
+/* ===== Bottom music player bar ===== */
+
+.muse-garden-player-bar {
+	position: fixed;
+	bottom: 0;
+	z-index: 100;
+	display: none; /* hidden until a track plays */
+	align-items: center;
+	gap: 10px;
+	padding: 6px 12px;
+	background: var(--background-secondary);
+	border-top: 1px solid var(--background-modifier-border);
+	/* NO border-radius, NO box-shadow, NO bottom-padding beyond the 6px above */
+}
+
+.muse-garden-player-bar.is-visible {
+	display: flex;
+}
+
+/* ── Player info block (icon + title + tags) ── */
+.muse-player-info {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+	flex: 0 0 200px;
+}
+
+.muse-player-icon {
+	display: flex;
+	align-items: center;
+	color: var(--text-muted);
+	flex-shrink: 0;
+}
+
+.muse-player-icon svg {
+	width: 14px;
+	height: 14px;
+}
+
+.muse-player-info-text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.muse-player-title {
+	font-size: var(--font-ui-small);
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Player tag chips row */
+.muse-player-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3px;
+	margin-top: 2px;
+}
+
+.muse-player-tag-chip {
+	font-size: 10px;
+	padding: 1px 6px;
+	border-radius: 999px;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	opacity: 0.8;
+}
+
+/* ── Controls ── */
+.muse-player-controls {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-shrink: 0;
+}
+
+.muse-player-playpause {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	border: none;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	cursor: pointer;
+	padding: 0;
+}
+
+.muse-player-playpause:hover {
+	background: var(--interactive-accent-hover);
+}
+
+.muse-player-playpause svg {
+	width: 14px;
+	height: 14px;
+}
+
+/* ── Timeline ── */
+.muse-player-timeline {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+}
+
+.muse-player-time {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+/*
+ * Custom seek track — not a native <input type="range">. This is what
+ * gives a visible progress color and a smoothly animated fill, which a
+ * native range input can't do without non-standard vendor-prefixed
+ * pseudo-elements.
+ */
+.muse-player-seek-track {
+	position: relative;
+	flex: 1;
+	height: 4px;
+	background: var(--background-modifier-border);
+	border-radius: 999px;
+	cursor: pointer;
+}
+
+.muse-player-seek-fill {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 0%;
+	background: var(--interactive-accent);
+	border-radius: 999px;
+	transition: width 0.1s linear;
+	pointer-events: none;
+}
+
+.muse-player-seek-handle {
+	position: absolute;
+	top: 50%;
+	left: 0%;
+	width: 10px;
+	height: 10px;
+	margin-left: -5px;
+	border-radius: 50%;
+	background: var(--interactive-accent);
+	transform: translateY(-50%);
+	transition: left 0.1s linear;
+	pointer-events: none;
+	box-shadow: 0 0 0 2px var(--background-secondary);
+}
+
+/* ── Volume control — icon + vertical popover ── */
+.muse-player-volume {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+	position: relative;
+}
+
+.muse-player-volume-icon {
+	display: flex;
+	align-items: center;
+	color: var(--text-muted);
+	cursor: pointer;
+	flex-shrink: 0;
+	padding: 4px;
+	border-radius: 4px;
+}
+
+.muse-player-volume-icon:hover {
+	color: var(--text-normal);
+	background: var(--background-modifier-hover);
+}
+
+.muse-player-volume-icon svg {
+	width: 16px;
+	height: 16px;
+}
+
+/* Vertical slider popover — hidden by default, revealed on hover */
+.muse-player-volume-popover {
+	display: none;
+	position: absolute;
+	bottom: calc(100% + 8px);
+	left: 50%;
+	transform: translateX(-50%);
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	padding: 10px 8px;
+	z-index: 200;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.muse-player-volume:hover .muse-player-volume-popover,
+.muse-player-volume-popover:hover {
+	display: block;
+}
+
+/* Vertical track */
+.muse-player-volume-track {
+	position: relative;
+	width: 6px;
+	height: 80px;
+	background: var(--background-modifier-border);
+	border-radius: 999px;
+	cursor: pointer;
+	margin: 0 auto;
+}
+
+.muse-player-volume-fill {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: var(--interactive-accent);
+	border-radius: 999px;
+	pointer-events: none;
+}
+
+.muse-player-volume-handle {
+	position: absolute;
+	left: 50%;
+	top: 0%;
+	width: 12px;
+	height: 12px;
+	margin-left: -6px;
+	margin-top: -6px;
+	border-radius: 50%;
+	background: var(--interactive-accent);
+	pointer-events: none;
+	box-shadow: 0 0 0 2px var(--background-secondary);
+}
+
+
+/* ===== Canvas audio node sync card ===== */
+
+.muse-canvas-node-card {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	background: var(--background-secondary);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 8px;
+	padding: 12px 16px;
+}
+
+.muse-canvas-node-toprow {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.muse-canvas-node-playbtn {
+	flex-shrink: 0;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	border: none;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+
+.muse-canvas-node-playbtn:hover {
+	background: var(--interactive-accent-hover);
+}
+
+.muse-canvas-node-playbtn-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.muse-canvas-node-playbtn-icon svg {
+	width: 15px;
+	height: 15px;
+}
+
+.muse-canvas-node-progress {
+	flex: 1;
+	height: 4px;
+	background: var(--background-modifier-border);
+	border-radius: 999px;
+	overflow: hidden;
+}
+
+.muse-canvas-node-progress-fill {
+	height: 100%;
+	width: 0%;
+	background: var(--interactive-accent);
+	transition: width 0.1s linear;
+}
+
+.muse-canvas-node-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	padding-left: 40px; /* roughly aligns with the seek bar, past the play button + gap */
+}
+
+.muse-canvas-node-tag-chip {
+	font-size: var(--font-ui-smaller);
+	padding: 1px 7px;
+	border-radius: 999px;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	opacity: 0.85;
+}
+
+/* Ensure the canvas node is tall enough to display the tags if present */
+.canvas-node:has(.muse-canvas-node-tags) {
+	min-height: 85px !important;
+}
+
+/* Missing file warning overlay */
+.muse-canvas-node-card--missing {
+	justify-content: center;
+	align-items: center;
+	gap: 12px;
+}
+
+.muse-missing-warning-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--text-warning, #e8a000);
+}
+
+.muse-missing-icon {
+	display: flex;
+	align-items: center;
+}
+
+.muse-missing-icon svg {
+	width: 18px;
+	height: 18px;
+}
+
+.muse-missing-msg {
+	font-size: var(--font-ui-small);
+	font-weight: 500;
+}
+
+.muse-missing-btn-row {
+	display: flex;
+	gap: 8px;
+}
+
+.muse-missing-btn {
+	font-size: var(--font-ui-smaller);
+	padding: 4px 10px;
+	border-radius: 6px;
+	border: 1px solid var(--background-modifier-border);
+	background: var(--background-secondary);
+	color: var(--text-normal);
+	cursor: pointer;
+}
+
+.muse-missing-btn:hover {
+	background: var(--background-modifier-hover);
+}
+
+.muse-missing-btn.mod-warning {
+	border-color: var(--text-error);
+	color: var(--text-error);
+}
+
+.muse-missing-btn.mod-warning:hover {
+	background: rgba(var(--color-red-rgb, 255,0,0), 0.1);
+}
+
+/* Relocate picker popover */
+.muse-relocate-picker {
+	position: absolute;
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	padding: 6px 0;
+	z-index: 300;
+	max-height: 200px;
+	overflow-y: auto;
+	min-width: 180px;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.muse-relocate-item {
+	padding: 5px 14px;
+	font-size: var(--font-ui-small);
+	cursor: pointer;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.muse-relocate-item:hover {
+	background: var(--background-modifier-hover);
+}
+
+
+/* ===== Canvas Project card ===== */
+
+.muse-project-card {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	background: var(--background-secondary);
+	overflow-y: auto;
+}
+
+.muse-project-card-header {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: var(--font-ui-small);
+	font-weight: 600;
+	padding: 8px 10px;
+	border-bottom: 1px solid var(--background-modifier-border);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	flex-shrink: 0;
+}
+
+.muse-project-card-header-icon {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+	color: var(--text-muted);
+}
+
+.muse-project-card-header-icon svg {
+	width: 14px;
+	height: 14px;
+}
+
+.muse-project-card-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	padding: 6px 10px;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.muse-project-card-tag-chip {
+	font-size: var(--font-ui-smaller);
+	padding: 1px 7px;
+	border-radius: 999px;
+	background: var(--text-accent);
+	color: var(--text-on-accent);
+	opacity: 0.85;
+}
+
+.muse-project-card-tracks {
+	flex: 1;
+	overflow-y: auto;
+	padding: 4px;
+}
+
+.muse-project-card-empty {
+	color: var(--text-faint);
+	font-size: var(--font-ui-smaller);
+	padding: 10px;
+	text-align: center;
+}
+
+.muse-project-track-wrapper {
+	padding: 2px 0;
+}
+
+.muse-project-track-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 6px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.muse-project-track-row:hover {
+	background: var(--background-modifier-hover);
+}
+
+.muse-project-track-row.is-playing .muse-project-track-icon {
+	color: var(--interactive-accent);
+}
+
+.muse-project-track-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3px;
+	padding-left: 22px; /* aligns roughly under the track name, past the icon */
+	margin-top: 2px;
+}
+
+.muse-project-track-tag-chip {
+	font-size: 10px;
+	padding: 0px 6px;
+	border-radius: 999px;
+	background: var(--background-modifier-border);
+	color: var(--text-muted);
+}
+
+.muse-project-track-icon {
+	flex-shrink: 0;
+	width: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-muted);
+}
+
+.muse-project-track-icon svg {
+	width: 11px;
+	height: 11px;
+}
+
+.muse-project-track-name {
+	flex: 1;
+	font-size: var(--font-ui-smaller);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.muse-project-track-progress {
+	width: 36px;
+	height: 3px;
+	background: var(--background-modifier-border);
+	border-radius: 999px;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.muse-project-track-progress-fill {
+	height: 100%;
+	width: 0%;
+	background: var(--interactive-accent);
+	transition: width 0.15s linear;
+}
+
+/* ── Canvas Tag Filter Popup ── */
+.muse-filter-popup {
+	background-color: var(--background-secondary);
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	padding: 12px;
+	font-family: var(--font-interface);
+	color: var(--text-normal);
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+.muse-filter-popup-title {
+	font-weight: 600;
+	font-size: 13px;
+	margin-bottom: 4px;
+	padding-bottom: 6px;
+	border-bottom: 1px solid var(--border-color);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.muse-filter-popup-close {
+	cursor: pointer;
+	color: var(--text-muted);
+	display: flex;
+	align-items: center;
+}
+.muse-filter-popup-close:hover {
+	color: var(--text-normal);
+}
+.muse-filter-popup-list {
+	max-height: 200px;
+	overflow-y: auto;
+	margin-bottom: 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+.muse-filter-popup-item {
+	display: flex;
+	align-items: center;
+	padding: 4px 6px;
+	cursor: pointer;
+	user-select: none;
+	border-radius: 4px;
+}
+.muse-filter-popup-item:hover {
+	background: var(--background-modifier-hover);
+}
+.muse-filter-popup-item input {
+	margin-right: 8px;
+	cursor: pointer;
+}
+.muse-filter-popup-item-label {
+	font-size: 12px;
+}
+.muse-filter-popup-empty {
+	font-size: 12px;
+	color: var(--text-muted);
+	font-style: italic;
+	padding: 8px 0;
+	text-align: center;
+}
+.muse-filter-popup-clear {
+	display: block;
+	width: 100%;
+	text-align: center;
+	font-size: 11px;
+	color: var(--text-accent);
+	cursor: pointer;
+	padding-top: 6px;
+	border-top: 1px solid var(--border-color);
+	margin-top: 2px;
+}
+.muse-filter-popup-clear:hover {
+	text-decoration: underline;
+}
+
+/* Hidden canvas nodes & edges */
+.muse-filtered-out {
+	display: none !important;
+}
+
