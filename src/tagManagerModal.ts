@@ -1,8 +1,7 @@
 import { App, Modal, TFile, setIcon } from 'obsidian';
 import type MuseGardenPlugin from './main';
 import { getAllKnownTags, addTag, removeTag } from './audioStore';
-import { getAllKnownProjectTags, addProjectTag, removeProjectTag, findProjectForFolder, getOrCreateProjectForFolder } from './projectStore';
-import type { ProjectMarker } from './settings';
+import { getAllKnownProjectTags, addProjectTag, removeProjectTag, getOrCreateProjectForFolder } from './projectStore';
 
 type Mode =
 	| { kind: 'track'; vaultPath: string }
@@ -57,7 +56,7 @@ export class TagManagerModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		contentEl.createEl('h3', { text: 'Tag Manager', cls: 'muse-tm-heading' });
+		contentEl.createEl('h3', { text: 'Tag manager', cls: 'muse-tm-heading' });
 
 		const allTrackTags = getAllKnownTags(this.plugin);
 		const allProjectTags = getAllKnownProjectTags(this.plugin);
@@ -125,7 +124,7 @@ export class TagManagerModal extends Modal {
 				setIcon(renameBtn, 'pencil');
 				renameBtn.addEventListener('click', () => {
 					// Inline rename: replace nameEl with an input
-					const input = document.createElement('input');
+					const input = activeDocument.createElement('input');
 					input.className = 'muse-tm-inline-input';
 					input.value = tag;
 					nameEl.replaceWith(input);
@@ -141,9 +140,9 @@ export class TagManagerModal extends Modal {
 						}
 					};
 					input.addEventListener('blur', commit);
-					input.addEventListener('keydown', (evt) => {
-						if (evt.key === 'Enter') { evt.preventDefault(); commit(); }
-						if (evt.key === 'Escape') { this.render(); }
+					input.addEventListener('keydown', (e: KeyboardEvent) => {
+						if (e.key === 'Enter') { e.preventDefault(); commit(); }
+						if (e.key === 'Escape') { this.render(); }
 					});
 				});
 
@@ -223,20 +222,20 @@ export class TagManagerModal extends Modal {
 
 				const markerFile = this.plugin.app.vault.getAbstractFileByPath(proj.markerVaultPath);
 				if (markerFile instanceof TFile) {
-					await this.plugin.app.fileManager.processFrontMatter(markerFile, (frontmatter) => {
-						const existingTags = frontmatter.tags;
-						if (Array.isArray(existingTags)) {
-							const i = existingTags.indexOf(oldTag);
-							if (i !== -1) {
-								if (!existingTags.includes(clean)) {
-									existingTags[i] = clean;
-								} else {
-									existingTags.splice(i, 1);
-								}
+				await this.plugin.app.fileManager.processFrontMatter(markerFile, (frontmatter: Record<string, unknown>) => {
+					const existingTags = frontmatter['tags'];
+					if (Array.isArray(existingTags)) {
+						const i = existingTags.indexOf(oldTag);
+						if (i !== -1) {
+							if (!existingTags.includes(clean)) {
+								existingTags[i] = clean;
+							} else {
+								existingTags.splice(i, 1);
 							}
-						} else if (typeof existingTags === 'string' && existingTags === oldTag) {
-							frontmatter.tags = clean;
 						}
+					} else if (typeof existingTags === 'string' && existingTags === oldTag) {
+						frontmatter['tags'] = clean;
+					}
 					});
 				}
 			}
@@ -263,12 +262,12 @@ export class TagManagerModal extends Modal {
 				proj.tags = proj.tags.filter((t) => t !== tag);
 				const markerFile = this.plugin.app.vault.getAbstractFileByPath(proj.markerVaultPath);
 				if (markerFile instanceof TFile) {
-					await this.plugin.app.fileManager.processFrontMatter(markerFile, (frontmatter) => {
-						const existingTags = frontmatter.tags;
-						if (Array.isArray(existingTags)) {
-							frontmatter.tags = existingTags.filter((t) => t !== tag);
+				await this.plugin.app.fileManager.processFrontMatter(markerFile, (frontmatter: Record<string, unknown>) => {
+					const existingTags = frontmatter['tags'];
+					if (Array.isArray(existingTags)) {
+							frontmatter['tags'] = existingTags.filter((t) => t !== tag);
 						} else if (typeof existingTags === 'string' && existingTags === tag) {
-							frontmatter.tags = [];
+							frontmatter['tags'] = [];
 						}
 					});
 				}

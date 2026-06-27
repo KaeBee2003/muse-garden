@@ -1,29 +1,11 @@
 import { Component, TFile, WorkspaceLeaf, setIcon, normalizePath } from 'obsidian';
 import type MuseGardenPlugin from './main';
 import { createFileNodeOnCanvas, screenToCanvasPos, type ActiveCanvas } from './canvasNodeCreate';
-import type { UndocumentedCanvas } from './canvasNodeCreate';
+import type { UndocumentedCanvas, UndocumentedCanvasNode } from './canvasNodeCreate';
 import { MUSE_FOLDER_DRAG_MIME, MUSE_TRACK_DRAG_MIME } from './explorerView';
 import { getOrCreateProjectForFolder } from './projectStore';
 import { WebEmbedModal } from './webEmbedModal';
 
-/**
- * Lets MuseGarden Explorer tracks AND folders be dragged directly onto an
- * open Canvas (folders become Project nodes via a marker file — see
- * projectStore.ts for why a marker file is required).
- *
- * DELIBERATELY built on standard HTML5 drag-and-drop only:
- *  - Explorer rows set a custom dataTransfer MIME type (no Obsidian internals).
- *  - This class listens for ondragover/ondrop on each canvas view's own
- *    container element (just a normal DOM listener on a normal element).
- *  - The drop position is converted from screen to canvas-space by reading
- *    Canvas's own CSS transform (see screenToCanvasPos) — not by calling any
- *    internal coordinate-conversion method.
- *  - The only undocumented touchpoint is `canvas.createFileNode()` itself,
- *    which we'd already accepted for the "Send to active canvas" menu item.
- *
- * This means Muse Garden's drag-and-drop keeps working even if Obsidian
- * changes how its OWN internal drag manager works, since we never touch it.
- */
 export class CanvasDropZone extends Component {
 	private plugin: MuseGardenPlugin;
 	private attached = new WeakSet<HTMLElement>();
@@ -34,11 +16,9 @@ export class CanvasDropZone extends Component {
 	}
 
 	onload(): void {
-		// Attach to any canvas views already open.
 		for (const leaf of this.plugin.app.workspace.getLeavesOfType('canvas')) {
 			this.attachToLeaf(leaf);
 		}
-		// Attach to canvas views opened later.
 		this.registerEvent(
 			this.plugin.app.workspace.on('active-leaf-change', (leaf) => {
 				if (leaf && leaf.view.getViewType() === 'canvas') this.attachToLeaf(leaf);
@@ -63,27 +43,22 @@ export class CanvasDropZone extends Component {
 		if (this.attached.has(containerEl)) return;
 		this.attached.add(containerEl);
 
-		// Use capture phase so our handlers run before Obsidian's own canvas
-		// drag-and-drop handlers, which might swallow the event first.
-		containerEl.addEventListener('dragover', (evt) => {
+		containerEl.addEventListener('dragover', (evt: DragEvent) => {
 			const types = evt.dataTransfer?.types ?? [];
 			if (!types.includes(MUSE_TRACK_DRAG_MIME) && !types.includes(MUSE_FOLDER_DRAG_MIME)) return;
-			evt.preventDefault(); // required for drop to fire
+			evt.preventDefault();
 			evt.stopPropagation();
 			if (evt.dataTransfer) evt.dataTransfer.dropEffect = 'copy';
-		}, true); // capture phase
+		}, true);
 
-		containerEl.addEventListener('drop', (evt) => {
-			// IMPORTANT: dataTransfer is nulled out after the synchronous drop event
-			// completes. Read all getData() values here — synchronously — before
-			// passing them into the async handler as plain strings.
+		containerEl.addEventListener('drop', (evt: DragEvent) => {
 			const trackPath = evt.dataTransfer?.getData(MUSE_TRACK_DRAG_MIME) ?? '';
 			const folderPath = evt.dataTransfer?.getData(MUSE_FOLDER_DRAG_MIME) ?? '';
 			if (!trackPath && !folderPath) return;
 			evt.preventDefault();
 			evt.stopPropagation();
 			void this.handleDrop(view, containerEl, trackPath, folderPath, evt.clientX, evt.clientY);
-		}, true); // capture phase
+		}, true);
 	}
 
 	private async handleDrop(
@@ -103,7 +78,6 @@ export class CanvasDropZone extends Component {
 		if (trackPath) {
 			const file = this.plugin.app.vault.getAbstractFileByPath(trackPath);
 			if (!(file instanceof TFile)) return;
-			// Center the ~400x42 default audio node on the cursor.
 			createFileNodeOnCanvas(active, file, { x: pos.x - 200, y: pos.y - 21 });
 			return;
 		}
@@ -111,22 +85,20 @@ export class CanvasDropZone extends Component {
 		if (folderPath) {
 			const { markerFile } = await getOrCreateProjectForFolder(this.plugin, folderPath);
 			if (!(markerFile instanceof TFile)) return;
-			// Project cards default to a taller layout (see canvasSync.ts), center accordingly.
 			createFileNodeOnCanvas(active, markerFile, { x: pos.x - 110, y: pos.y - 70 });
 		}
 	}
 
 	private injectEmbedButton(containerEl: HTMLElement): void {
-		const view = this.plugin.app.workspace.getLeavesOfType('canvas').find(l => l.view.containerEl === containerEl)?.view as any;
+		const view = this.plugin.app.workspace.getLeavesOfType('canvas').find(l => l.view.containerEl === containerEl)?.view as ({ canvas?: UndocumentedCanvas }) | undefined;
 		const tryInject = () => {
 			const menu = containerEl.querySelector('.canvas-card-menu');
 			if (!menu) return false;
 
-			// 1. Inject Add Web Embed button if not present
 			if (!menu.querySelector('.muse-add-embed-btn')) {
-				const btn = document.createElement('div');
+				const btn = activeDocument.createElement('div');
 				btn.className = 'canvas-card-menu-button muse-add-embed-btn';
-				btn.setAttribute('aria-label', 'Add Web Embed (SoundCloud/Spotify/YouTube/Drive)');
+				btn.setAttribute('aria-label', 'Add web embed (soundcloud/spotify/YouTube/drive)');
 				btn.setAttribute('data-tooltip-position', 'top');
 				setIcon(btn, 'link');
 
@@ -138,9 +110,8 @@ export class CanvasDropZone extends Component {
 				menu.appendChild(btn);
 			}
 
-			// 2. Inject Canvas Filter button if not present
 			if (!menu.querySelector('.muse-filter-btn')) {
-				const filterBtn = document.createElement('div');
+				const filterBtn = activeDocument.createElement('div');
 				filterBtn.className = 'canvas-card-menu-button muse-filter-btn';
 				filterBtn.setAttribute('data-tooltip-position', 'top');
 				setIcon(filterBtn, 'filter');
@@ -153,7 +124,7 @@ export class CanvasDropZone extends Component {
 						canvas.activeFilterTags = new Set<string>();
 					}
 
-					const existing = document.querySelector('.muse-filter-popup');
+					const existing = activeDocument.querySelector('.muse-filter-popup');
 					if (existing) {
 						existing.remove();
 						return;
@@ -165,10 +136,9 @@ export class CanvasDropZone extends Component {
 				menu.appendChild(filterBtn);
 			}
 
-			// Update the filter button UI states
 			const canvas = view?.canvas;
-			const filterBtn = menu.querySelector('.muse-filter-btn') as HTMLElement | null;
-			if (filterBtn && canvas) {
+			const filterBtn = menu.querySelector('.muse-filter-btn');
+			if (filterBtn instanceof HTMLElement && canvas) {
 				if (!canvas.activeFilterTags) {
 					canvas.activeFilterTags = new Set<string>();
 				}
@@ -176,10 +146,10 @@ export class CanvasDropZone extends Component {
 				filterBtn.classList.toggle('is-active', filterActive);
 				if (filterActive) {
 					setIcon(filterBtn, 'filter-x');
-					filterBtn.setAttribute('aria-label', 'Active Canvas Filter (Click to toggle/clear)');
+					filterBtn.setAttribute('aria-label', 'Active canvas filter (click to toggle/clear)');
 				} else {
 					setIcon(filterBtn, 'filter');
-					filterBtn.setAttribute('aria-label', 'Filter Canvas by Tags');
+					filterBtn.setAttribute('aria-label', 'Filter canvas by tags');
 				}
 			}
 
@@ -188,25 +158,25 @@ export class CanvasDropZone extends Component {
 
 		if (!tryInject()) {
 			let attempts = 0;
-			const timer = setInterval(() => {
+			const timer = window.setInterval(() => {
 				attempts++;
 				if (tryInject() || attempts >= 15) {
-					clearInterval(timer);
+					window.clearInterval(timer);
 				}
 			}, 200);
 		}
 	}
 
-	private getFileForNode(node: any): TFile | null {
+	private getFileForNode(node: UndocumentedCanvasNode | null | undefined): TFile | null {
 		if (!node) return null;
-		let file = node.file;
-		if (file instanceof TFile) return file;
+		const rawFile = node.file;
+		if (rawFile instanceof TFile) return rawFile;
 
 		let path = '';
-		if (typeof file === 'string') {
-			path = file;
-		} else if (file && typeof file === 'object') {
-			path = file.path || file.filePath || '';
+		if (typeof rawFile === 'string') {
+			path = rawFile;
+		} else if (rawFile && typeof rawFile === 'object') {
+			path = rawFile.path ?? rawFile.filePath ?? '';
 		}
 
 		if (!path && node.filePath) {
@@ -214,7 +184,7 @@ export class CanvasDropZone extends Component {
 		}
 
 		if (!path && node.nodeEl) {
-			path = node.nodeEl.dataset?.path || node.nodeEl.dataset?.filePath || '';
+			path = node.nodeEl.dataset?.path ?? node.nodeEl.dataset?.filePath ?? '';
 		}
 
 		if (path) {
@@ -225,21 +195,19 @@ export class CanvasDropZone extends Component {
 		return null;
 	}
 
-	private getCanvasTags(canvas: any): string[] {
+	private getCanvasTags(canvas: UndocumentedCanvas): string[] {
 		const tags = new Set<string>();
 		if (!canvas || !canvas.nodes) return [];
 
-		for (const [id, node] of canvas.nodes) {
+		for (const [, node] of canvas.nodes) {
 			const file = this.getFileForNode(node);
 			if (file) {
-				// 1. Audio node tags
 				const audioTags = this.plugin.settings.tags[file.path]?.tags || [];
 				for (const t of audioTags) {
 					const cleaned = t.trim().replace(/^#/, '');
 					if (cleaned) tags.add(cleaned);
 				}
 
-				// 2. Project node tags and project track tags
 				const project = this.plugin.settings.projects.find((p) => p.markerVaultPath === file.path);
 				if (project) {
 					if (project.tags) {
@@ -248,7 +216,6 @@ export class CanvasDropZone extends Component {
 							if (cleaned) tags.add(cleaned);
 						}
 					}
-					// Scan folder tracks
 					if (project.folderVaultPath) {
 						const folderPrefix = normalizePath(project.folderVaultPath).toLowerCase() + '/';
 						const vaultFiles = this.plugin.app.vault.getFiles();
@@ -263,29 +230,27 @@ export class CanvasDropZone extends Component {
 							}
 						}
 					}
-				}
 
-				// 3. General file cache tags and frontmatter
-				const cache = this.plugin.app.metadataCache.getFileCache(file);
-				if (cache) {
-					const fileTags = cache.tags || [];
-					for (const t of fileTags) {
-						const rawTag = typeof t === 'string' ? t : (t && (t as any).tag) || '';
-						const cleaned = rawTag.trim().replace(/^#/, '');
-						if (cleaned) tags.add(cleaned);
-					}
-					const fmTags = cache.frontmatter?.tags;
-					if (fmTags) {
-						const arr = Array.isArray(fmTags) ? fmTags : [fmTags];
-						for (const t of arr) {
-							const cleaned = String(t).trim().replace(/^#/, '');
+					const cache = this.plugin.app.metadataCache.getFileCache(file);
+					if (cache) {
+						const fileTags = cache.tags || [];
+						for (const t of fileTags) {
+							const rawTag = typeof t === 'string' ? t : (t && t.tag) || '';
+							const cleaned = rawTag.trim().replace(/^#/, '');
 							if (cleaned) tags.add(cleaned);
+						}
+						const fmTags: unknown = cache.frontmatter?.['tags'];
+						if (fmTags) {
+							const arr = Array.isArray(fmTags) ? fmTags : [fmTags];
+							for (const t of arr) {
+								const cleaned = String(t).trim().replace(/^#/, '');
+								if (cleaned) tags.add(cleaned);
+							}
 						}
 					}
 				}
 			}
 
-			// 4. Text node content hashtags
 			if (node.text) {
 				const matches = node.text.match(/#[a-zA-Z0-9_\-/]+/g);
 				if (matches) {
@@ -296,7 +261,6 @@ export class CanvasDropZone extends Component {
 				}
 			}
 
-			// 5. DOM text content hashtags
 			if (node.nodeEl) {
 				const contentEl = node.nodeEl.querySelector('.canvas-node-content');
 				if (contentEl && contentEl.textContent) {
@@ -314,76 +278,70 @@ export class CanvasDropZone extends Component {
 		return Array.from(tags).sort((a, b) => a.localeCompare(b));
 	}
 
-	private showFilterPopup(filterBtn: HTMLElement, canvas: any): void {
-		const popup = document.createElement('div');
+	private showFilterPopup(filterBtn: HTMLElement, canvas: UndocumentedCanvas): void {
+		const popup = activeDocument.createElement('div');
 		popup.className = 'muse-filter-popup';
 
-		const titleRow = document.createElement('div');
+		const titleRow = activeDocument.createElement('div');
 		titleRow.className = 'muse-filter-popup-title';
-		titleRow.textContent = 'Filter Canvas by Tags';
+		titleRow.textContent = 'Filter canvas by tags';
 
-		const closeBtn = document.createElement('span');
+		const closeBtn = activeDocument.createElement('span');
 		closeBtn.className = 'muse-filter-popup-close';
 		setIcon(closeBtn, 'x');
 		closeBtn.addEventListener('click', () => popup.remove());
 		titleRow.appendChild(closeBtn);
 		popup.appendChild(titleRow);
 
-		const listContainer = document.createElement('div');
+		const listContainer = activeDocument.createElement('div');
 		listContainer.className = 'muse-filter-popup-list';
+
+		const activeTags = canvas.activeFilterTags ?? new Set<string>();
 
 		const tags = this.getCanvasTags(canvas);
 		if (tags.length === 0) {
-			const empty = document.createElement('div');
+			const empty = activeDocument.createElement('div');
 			empty.className = 'muse-filter-popup-empty';
 			empty.textContent = 'No tags found on canvas nodes.';
 			listContainer.appendChild(empty);
 		} else {
 			for (const tag of tags) {
-				const row = document.createElement('div');
+				const row = activeDocument.createElement('div');
 				row.className = 'muse-filter-popup-item';
 
-				const checkbox = document.createElement('input');
+				const checkbox = activeDocument.createElement('input');
 				checkbox.type = 'checkbox';
-				checkbox.checked = canvas.activeFilterTags.has(tag);
+				checkbox.checked = activeTags.has(tag);
 
-				const label = document.createElement('span');
+				const label = activeDocument.createElement('span');
 				label.className = 'muse-filter-popup-item-label';
 				label.textContent = `#${tag}`;
 
 				const toggleTag = () => {
 					checkbox.checked = !checkbox.checked;
 					if (checkbox.checked) {
-						canvas.activeFilterTags.add(tag);
+						activeTags.add(tag);
 					} else {
-						canvas.activeFilterTags.delete(tag);
+						activeTags.delete(tag);
 					}
-					filterBtn.classList.toggle('is-active', canvas.activeFilterTags.size > 0);
-					if (canvas.activeFilterTags.size > 0) {
-						setIcon(filterBtn, 'filter-x');
-					} else {
-						setIcon(filterBtn, 'filter');
-					}
+					filterBtn.classList.toggle('is-active', activeTags.size > 0);
+					setIcon(filterBtn, activeTags.size > 0 ? 'filter-x' : 'filter');
 					this.plugin.app.workspace.trigger('muse-garden:apply-canvas-filter', canvas);
 				};
 
-				row.addEventListener('click', (e) => {
+				row.addEventListener('click', (e: MouseEvent) => {
 					if (e.target !== checkbox) {
 						toggleTag();
 					}
 				});
 				checkbox.addEventListener('change', () => {
 					if (checkbox.checked) {
-						canvas.activeFilterTags.add(tag);
+						activeTags.add(tag);
 					} else {
-						canvas.activeFilterTags.delete(tag);
+						activeTags.delete(tag);
 					}
-					filterBtn.classList.toggle('is-active', canvas.activeFilterTags.size > 0);
-					if (canvas.activeFilterTags.size > 0) {
-						setIcon(filterBtn, 'filter-x');
-					} else {
-						setIcon(filterBtn, 'filter');
-					}
+					filterBtn.classList.toggle('is-active', activeTags.size > 0);
+					setIcon(filterBtn, activeTags.size > 0 ? 'filter-x' : 'filter');
 					this.plugin.app.workspace.trigger('muse-garden:apply-canvas-filter', canvas);
 				});
 
@@ -395,13 +353,13 @@ export class CanvasDropZone extends Component {
 		popup.appendChild(listContainer);
 
 		if (tags.length > 0) {
-			const clearBtn = document.createElement('div');
+			const clearBtn = activeDocument.createElement('div');
 			clearBtn.className = 'muse-filter-popup-clear';
 			clearBtn.textContent = 'Clear all filters';
 			clearBtn.addEventListener('click', () => {
-				canvas.activeFilterTags.clear();
+				activeTags.clear();
 				const boxes = listContainer.querySelectorAll('input[type="checkbox"]');
-				boxes.forEach((b: any) => b.checked = false);
+				boxes.forEach((b) => { (b as HTMLInputElement).checked = false; });
 				filterBtn.classList.remove('is-active');
 				setIcon(filterBtn, 'filter');
 				this.plugin.app.workspace.trigger('muse-garden:apply-canvas-filter', canvas);
@@ -409,23 +367,25 @@ export class CanvasDropZone extends Component {
 			popup.appendChild(clearBtn);
 		}
 
-		document.body.appendChild(popup);
+		activeDocument.body.appendChild(popup);
 
 		const rect = filterBtn.getBoundingClientRect();
-		popup.style.position = 'fixed';
-		popup.style.zIndex = '1000';
-		popup.style.width = '220px';
-		popup.style.left = `${Math.max(10, rect.left + rect.width / 2 - 110)}px`;
-		popup.style.bottom = `${window.innerHeight - rect.top + 8}px`;
+		popup.setCssStyles({
+			position: 'fixed',
+			zIndex: '1000',
+			width: '220px',
+			left: `${Math.max(10, rect.left + rect.width / 2 - 110)}px`,
+			bottom: `${window.innerHeight - rect.top + 8}px`,
+		});
 
-		setTimeout(() => {
+		window.setTimeout(() => {
 			const handleOutsideClick = (e: MouseEvent) => {
 				if (!popup.contains(e.target as Node) && !filterBtn.contains(e.target as Node)) {
 					popup.remove();
-					document.removeEventListener('click', handleOutsideClick);
+					activeDocument.removeEventListener('click', handleOutsideClick);
 				}
 			};
-			document.addEventListener('click', handleOutsideClick);
+			activeDocument.addEventListener('click', handleOutsideClick);
 		}, 0);
 	}
 }

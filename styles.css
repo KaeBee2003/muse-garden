@@ -418,20 +418,21 @@
 	flex-shrink: 0;
 }
 
+.muse-tm-manage-row.mod-warning .muse-tm-icon-btn.mod-warning:hover,
 .muse-tm-icon-btn.mod-warning:hover {
-	color: var(--text-error) !important;
+	color: var(--text-error);
 }
 
 
 
 /* ===== Dynamic layout offsets when Muse player is active ===== */
 body.has-muse-player-bar .status-bar {
-	bottom: 46px !important;
+	bottom: calc(var(--status-bar-position-bottom, 0px) + 46px);
 }
 
 body.has-muse-player-bar .canvas-controls,
 body.has-muse-player-bar .canvas-card-menu {
-	bottom: 61px !important;
+	bottom: calc(var(--canvas-controls-position-bottom, 0px) + 61px);
 }
 
 .muse-player-close {
@@ -830,9 +831,10 @@ body.has-muse-player-bar .canvas-card-menu {
 	opacity: 0.85;
 }
 
-/* Ensure the canvas node is tall enough to display the tags if present */
-.canvas-node:has(.muse-canvas-node-tags) {
-	min-height: 85px !important;
+/* Ensure the canvas node is tall enough to display tags.
+ * The .muse-has-tags class is added via JS when a node has tags rendered. */
+.canvas-node.muse-has-tags {
+	min-height: 85px;
 }
 
 /* Missing file warning overlay */
@@ -1142,8 +1144,8 @@ body.has-muse-player-bar .canvas-card-menu {
 	text-decoration: underline;
 }
 
-/* Hidden canvas nodes & edges */
-.muse-filtered-out {
-	display: none !important;
+/* Hidden canvas nodes & edges — use high specificity instead of !important */
+.workspace .muse-filtered-out {
+	display: none;
 }
 

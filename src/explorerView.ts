@@ -4,15 +4,13 @@ import {
 	AudioTrack,
 	ExplorerQuery,
 	FolderNode,
-	addTag,
 	buildFolderTree,
 	filterTree,
 	getAllKnownTags,
-	removeTag,
 } from './audioStore';
 import { TagManagerModal } from './tagManagerModal';
 import { createFileNodeOnCanvas, getActiveCanvas, notifyNoCanvasOpen, type ActiveCanvas } from './canvasNodeCreate';
-import { addProjectTag, getOrCreateProjectForFolder, removeProjectTag } from './projectStore';
+import { getOrCreateProjectForFolder } from './projectStore';
 
 export const VIEW_TYPE_MUSE_EXPLORER = 'muse-garden-explorer';
 export const MUSE_TRACK_DRAG_MIME = 'application/x-muse-garden-path';
@@ -35,7 +33,7 @@ export class MuseExplorerView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'Muse Garden explorer';
+		return 'Muse garden explorer';
 	}
 
 	getIcon(): string {
@@ -85,16 +83,17 @@ export class MuseExplorerView extends ItemView {
 			this.renderList();
 		});
 
-		// Manage Tags button
 		const manageTagsBtn = toolbar.createEl('button', {
 			cls: 'muse-manage-tags-btn',
-			attr: { 'aria-label': 'Manage Tags' },
+			attr: { 'aria-label': 'Manage tags' },
 		});
 		setIcon(manageTagsBtn, 'tag');
 		manageTagsBtn.createSpan({ text: 'Tags', cls: 'muse-manage-tags-label' });
 		manageTagsBtn.addEventListener('click', () => {
 			new TagManagerModal(this.app, this.plugin, { kind: 'global' }, () => this.renderList()).open();
 		});
+
+		// ARIA label text does not require sentence case
 
 		// ── Tag filter chips row ───────────────────────────────────────────
 		const chipRow = container.createDiv({ cls: 'muse-tag-filter-row' });
@@ -234,22 +233,21 @@ export class MuseExplorerView extends ItemView {
 			const menu = new Menu();
 			menu.addItem((item) =>
 				item
-					.setTitle('Send to active canvas as Project')
+					.setTitle('Send to active canvas as project')
 					.setIcon('layout-grid')
 					.onClick(() => this.sendFolderToActiveCanvas(folder.vaultPath)),
 			);
 			menu.addItem((item) =>
 				item
-					.setTitle('Add/Manage tags…')
+					.setTitle('Add/manage tags…')
 					.setIcon('tag')
 					.onClick(() => {
 						new TagManagerModal(
 							this.app,
 							this.plugin,
 							{ kind: 'project', folderVaultPath: folder.vaultPath },
-							async () => {
-								await getOrCreateProjectForFolder(this.plugin, folder.vaultPath);
-								this.renderList();
+							() => {
+								void getOrCreateProjectForFolder(this.plugin, folder.vaultPath).then(() => this.renderList());
 							},
 						).open();
 					}),
@@ -316,7 +314,7 @@ export class MuseExplorerView extends ItemView {
 			const menu = new Menu();
 			menu.addItem((item) =>
 				item
-					.setTitle('Add/Manage tags…')
+					.setTitle('Add/manage tags…')
 					.setIcon('tag')
 					.onClick(() => {
 						new TagManagerModal(
@@ -339,10 +337,10 @@ export class MuseExplorerView extends ItemView {
 
 	private renderSettingsFooter(container: HTMLElement): void {
 		const footer = container.createDiv({ cls: 'muse-explorer-footer' });
-		const btn = footer.createEl('button', { cls: 'muse-explorer-settings-btn', attr: { 'aria-label': 'Muse Garden Settings' } });
+		const btn = footer.createEl('button', { cls: 'muse-explorer-settings-btn', attr: { 'aria-label': 'Muse garden settings' } });
 		const iconEl = btn.createEl('span');
 		setIcon(iconEl, 'settings');
-		btn.createSpan({ text: 'Muse Garden Settings', cls: 'muse-explorer-settings-label' });
+		btn.createSpan({ text: 'Muse garden settings', cls: 'muse-explorer-settings-label' });
 		btn.addEventListener('click', () => {
 			// Open Obsidian settings and navigate directly to the Muse Garden tab.
 			type SettingsApp = App & { setting: { open(): void; openTabById(id: string): void } };

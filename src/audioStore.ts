@@ -130,7 +130,7 @@ export function filterTree(roots: FolderNode[], query: ExplorerQuery): FolderNod
 		const filteredSubfolders = node.subfolders
 			.map(filterNode)
 			.filter((n): n is FolderNode => n !== null);
-		const folderNameMatches = !nameQ && node.name.toLowerCase().includes('');
+
 
 		if (matchedTracks.length === 0 && filteredSubfolders.length === 0) {
 			return null;

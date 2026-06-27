@@ -52,12 +52,12 @@ export class MuseGardenPlayer extends Component {
 	constructor(plugin: MuseGardenPlugin) {
 		super();
 		this.plugin = plugin;
-		this.audioEl = document.createElement('audio');
+		this.audioEl = activeDocument.createElement('audio');
 		this.barEl = this.buildBar();
 	}
 
 	onload(): void {
-		document.body.appendChild(this.barEl);
+		activeDocument.body.appendChild(this.barEl);
 		this.setupMainAreaTracking();
 
 		this.registerDomEvent(this.audioEl, 'timeupdate', () => this.onTimeUpdate());
@@ -97,28 +97,26 @@ export class MuseGardenPlayer extends Component {
 	 */
 	private setupMainAreaTracking(): void {
 		const reposition = () => {
-			const mainEl = document.querySelector('.workspace .mod-root') as HTMLElement | null;
+			const mainEl = activeDocument.querySelector('.workspace .mod-root');
 			if (!mainEl) {
 				// Fall back to full width if we can't find it for some reason,
 				// rather than leaving the bar invisible.
-				this.barEl.style.left = '0';
-				this.barEl.style.width = '100%';
+				this.barEl.setCssStyles({ left: '0', width: '100%' });
 				return;
 			}
 			const rect = mainEl.getBoundingClientRect();
-			this.barEl.style.left = `${rect.left}px`;
-			this.barEl.style.width = `${rect.width}px`;
+			this.barEl.setCssStyles({ left: `${rect.left}px`, width: `${rect.width}px` });
 		};
 
 		reposition();
 
 		this.mainAreaObserver = new ResizeObserver(() => reposition());
-		const mainEl = document.querySelector('.workspace .mod-root');
+		const mainEl = activeDocument.querySelector('.workspace .mod-root');
 		if (mainEl) this.mainAreaObserver.observe(mainEl);
 		// Also observe the whole workspace, since the .mod-root element
 		// itself can be replaced (e.g. sidebar toggled) without a single
 		// persistent node to keep observing.
-		const workspaceEl = document.querySelector('.workspace');
+		const workspaceEl = activeDocument.querySelector('.workspace');
 		if (workspaceEl) this.mainAreaObserver.observe(workspaceEl);
 
 		this.registerEvent(this.plugin.app.workspace.on('resize', reposition));
@@ -129,7 +127,7 @@ export class MuseGardenPlayer extends Component {
 		this.audioEl.pause();
 		this.audioEl.remove();
 		this.barEl.remove();
-		document.body.removeClass('has-muse-player-bar');
+		activeDocument.body.removeClass('has-muse-player-bar');
 		this.listeners.clear();
 		this.progressListeners.clear();
 		this.mainAreaObserver?.disconnect();
@@ -142,7 +140,7 @@ export class MuseGardenPlayer extends Component {
 		this.audioEl.src = '';
 		this.currentPath = null;
 		this.barEl.removeClass('is-visible');
-		document.body.removeClass('has-muse-player-bar');
+		activeDocument.body.removeClass('has-muse-player-bar');
 		this.emitState();
 		this.emitProgress();
 	}
@@ -159,9 +157,9 @@ export class MuseGardenPlayer extends Component {
 
 		this.titleEl.setText(file.basename);
 		this.barEl.addClass('is-visible');
-		document.body.addClass('has-muse-player-bar');
-		this.seekFillEl.style.width = '0%';
-		this.seekHandleEl.style.left = '0%';
+		activeDocument.body.addClass('has-muse-player-bar');
+		this.seekFillEl.setCssStyles({ width: '0%' });
+		this.seekHandleEl.setCssStyles({ left: '0%' });
 		this.refreshTags();
 		this.emitState(); // covers the track-switch itself, separate from the 'play' DOM event
 		this.emitProgress();
@@ -246,17 +244,17 @@ export class MuseGardenPlayer extends Component {
 		const tags = this.currentPath ? (this.plugin.settings.tags[this.currentPath]?.tags ?? []) : [];
 
 		if (showTags && tags.length > 0) {
-			this.tagsEl.style.display = 'flex';
+			this.tagsEl.setCssStyles({ display: 'flex' });
 			for (const tag of tags) {
 				this.tagsEl.createSpan({ cls: 'muse-player-tag-chip', text: tag });
 			}
 		} else {
-			this.tagsEl.style.display = 'none';
+			this.tagsEl.setCssStyles({ display: 'none' });
 		}
 	}
 
 	private buildBar(): HTMLElement {
-		const bar = document.createElement('div');
+		const bar = activeDocument.createElement('div');
 		bar.className = 'muse-garden-player-bar';
 
 		// ── Info: icon + title + tags ─────────────────────────────────────
@@ -267,7 +265,7 @@ export class MuseGardenPlayer extends Component {
 		const infoText = info.createDiv({ cls: 'muse-player-info-text' });
 		this.titleEl = infoText.createSpan({ cls: 'muse-player-title', text: 'Nothing playing' });
 		this.tagsEl = infoText.createDiv({ cls: 'muse-player-tags' });
-		this.tagsEl.style.display = 'none';
+		this.tagsEl.setCssStyles({ display: 'none' });
 
 		// ── Controls: play/pause ──────────────────────────────────────────
 		const controls = bar.createDiv({ cls: 'muse-player-controls' });
@@ -291,7 +289,7 @@ export class MuseGardenPlayer extends Component {
 			const pct = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
 			return pct;
 		};
-		seekTrack.addEventListener('mousedown', (evt) => {
+		seekTrack.addEventListener('mousedown', (evt: MouseEvent) => {
 			this.isScrubbing = true;
 			const pct = seekToClientX(evt.clientX);
 			this.setSeekVisual(pct);
@@ -380,9 +378,9 @@ export class MuseGardenPlayer extends Component {
 		const clamped = Math.min(1, Math.max(0, volume));
 		this.audioEl.volume = clamped;
 		// Vertical fill: fill from bottom upward (height % = volume %)
-		this.volumeFillEl.style.height = `${clamped * 100}%`;
+		this.volumeFillEl.setCssStyles({ height: `${clamped * 100}%` });
 		// Handle position: 0% = bottom, 100% = top  →  top = (1 - clamped) * 100%
-		this.volumeHandleEl.style.top = `${(1 - clamped) * 100}%`;
+		this.volumeHandleEl.setCssStyles({ top: `${(1 - clamped) * 100}%` });
 		setIcon(this.volumeIconEl, clamped === 0 ? 'volume-x' : clamped < 0.5 ? 'volume-1' : 'volume-2');
 		if (persist) {
 			this.plugin.settings.volume = clamped;
@@ -391,8 +389,8 @@ export class MuseGardenPlayer extends Component {
 	}
 
 	private setSeekVisual(pct: number): void {
-		this.seekFillEl.style.width = `${pct * 100}%`;
-		this.seekHandleEl.style.left = `${pct * 100}%`;
+		this.seekFillEl.setCssStyles({ width: `${pct * 100}%` });
+		this.seekHandleEl.setCssStyles({ left: `${pct * 100}%` });
 		this.currentTimeEl.setText(formatTime(pct * (this.audioEl.duration || 0)));
 	}
 
@@ -402,8 +400,8 @@ export class MuseGardenPlayer extends Component {
 			this.currentTimeEl.setText(formatTime(this.audioEl.currentTime || 0));
 			if (this.audioEl.duration) {
 				const pct = this.audioEl.currentTime / this.audioEl.duration;
-				this.seekFillEl.style.width = `${pct * 100}%`;
-				this.seekHandleEl.style.left = `${pct * 100}%`;
+				this.seekFillEl.setCssStyles({ width: `${pct * 100}%` });
+				this.seekHandleEl.setCssStyles({ left: `${pct * 100}%` });
 			}
 		}
 		this.emitProgress();

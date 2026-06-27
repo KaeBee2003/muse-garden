@@ -46,12 +46,12 @@ export default class MuseGardenPlugin extends Plugin {
 
 		// MuseGarden Explorer sidebar view.
 		this.registerView(VIEW_TYPE_MUSE_EXPLORER, (leaf) => new MuseExplorerView(leaf, this));
-		this.addRibbonIcon('muse-garden-logo', 'Open MuseGarden explorer', () => {
+		this.addRibbonIcon('muse-garden-logo', 'Open musegarden explorer', () => {
 			void this.activateExplorerView();
 		});
 		this.addCommand({
 			id: 'open-muse-explorer',
-			name: 'Open MuseGarden explorer',
+			name: 'Open musegarden explorer',
 			callback: () => {
 				void this.activateExplorerView();
 			},
@@ -140,7 +140,7 @@ export default class MuseGardenPlugin extends Plugin {
 		await fs.promises.rm(oldFolderAbs, { recursive: true, force: true }).catch(() => {});
 
 		await this.saveSettings();
-		new Notice('Muse Garden: updated link folder so tracks show up correctly. Reopen the Explorer.');
+		new Notice('Muse garden: updated link folder so tracks show up correctly. Reopen the explorer.');
 	}
 
 	/**
@@ -230,13 +230,13 @@ export default class MuseGardenPlugin extends Plugin {
 		}
 		const oldMarkerFolderVaultPath = this.app.vault.getAbstractFileByPath(normalizePath(oldMarkerFolder));
 		if (oldMarkerFolderVaultPath) {
-			await this.app.vault.delete(oldMarkerFolderVaultPath, true).catch(() => {});
+			await this.app.fileManager.trashFile(oldMarkerFolderVaultPath).catch(() => {});
 		}
 
 		this.settings.linkFolder = newLinkFolder;
 		this.settings.markerFolder = newMarkerFolder;
 		await this.saveSettings();
-		new Notice('Muse Garden: reorganized config into MuseGardenConfig/. Reopen any open canvases.');
+		new Notice('Muse garden: reorganized config into musegardenconfig/. Reopen any open canvases.');
 	}
 
 
@@ -275,7 +275,7 @@ export default class MuseGardenPlugin extends Plugin {
 		// Migration: earlier builds had a single `showTagsOnCanvas` boolean.
 		// Carry its value forward into the two canvas-specific toggles so
 		// behaviour doesn't silently change on first upgrade.
-		const legacyShowTags = (raw as Record<string, unknown> | null | undefined)?.['showTagsOnCanvas'];
+		const legacyShowTags = raw?.['showTagsOnCanvas'];
 		if (typeof legacyShowTags === 'boolean') {
 			// Only override if the new fields weren't already explicitly set in data.json
 			if (!('showTagsOnAudioNodes' in (raw ?? {}))) {

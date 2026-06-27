@@ -37,7 +37,8 @@ export async function getOrCreateProjectForFolder(
 		if (!(file instanceof TFile)) {
 			file = await writeMarkerFile(plugin, existing.markerVaultPath, folderVaultPath);
 		}
-		return { project: existing, markerFile: file as TFile };
+		if (!(file instanceof TFile)) throw new Error(`Failed to create marker file: ${existing.markerVaultPath}`);
+		return { project: existing, markerFile: file };
 	}
 
 	const folder = plugin.app.vault.getAbstractFileByPath(folderVaultPath);
@@ -71,16 +72,16 @@ export async function addProjectTag(plugin: MuseGardenPlugin, project: ProjectMa
 
 	const markerFile = plugin.app.vault.getAbstractFileByPath(project.markerVaultPath);
 	if (markerFile instanceof TFile) {
-		await plugin.app.fileManager.processFrontMatter(markerFile, (frontmatter) => {
-			const existingTags = frontmatter.tags || [];
+		await plugin.app.fileManager.processFrontMatter(markerFile, (frontmatter: Record<string, unknown>) => {
+			const existingTags: unknown = frontmatter['tags'] ?? [];
 			if (Array.isArray(existingTags)) {
 				if (!existingTags.includes(clean)) {
 					existingTags.push(clean);
-					frontmatter.tags = existingTags;
+					frontmatter['tags'] = existingTags;
 				}
 			} else {
 				const str = String(existingTags).trim();
-				frontmatter.tags = str ? [str, clean] : [clean];
+				frontmatter['tags'] = str ? [str, clean] : [clean];
 			}
 		});
 	}
@@ -97,12 +98,12 @@ export async function removeProjectTag(plugin: MuseGardenPlugin, project: Projec
 
 	const markerFile = plugin.app.vault.getAbstractFileByPath(project.markerVaultPath);
 	if (markerFile instanceof TFile) {
-		await plugin.app.fileManager.processFrontMatter(markerFile, (frontmatter) => {
-			const existingTags = frontmatter.tags;
+		await plugin.app.fileManager.processFrontMatter(markerFile, (frontmatter: Record<string, unknown>) => {
+			const existingTags: unknown = frontmatter['tags'];
 			if (Array.isArray(existingTags)) {
-				frontmatter.tags = existingTags.filter((t) => t !== tag);
+				frontmatter['tags'] = existingTags.filter((t) => t !== tag);
 			} else if (typeof existingTags === 'string' && existingTags === tag) {
-				frontmatter.tags = [];
+				frontmatter['tags'] = [];
 			}
 		});
 	}
@@ -115,11 +116,13 @@ export function syncProjectTagsFromCache(plugin: MuseGardenPlugin, project: Proj
 	const file = plugin.app.vault.getAbstractFileByPath(project.markerVaultPath);
 	if (file instanceof TFile) {
 		const cache = plugin.app.metadataCache.getFileCache(file);
-		const tags = cache?.frontmatter?.tags;
+		const tags = (cache?.frontmatter?.tags) as unknown;
 		let newTags: string[] = [];
 		if (Array.isArray(tags)) {
 			newTags = tags.map((t) => String(t).trim()).filter(Boolean);
-		} else if (tags) {
+		} else if (typeof tags === 'string') {
+			newTags = [tags.trim()].filter(Boolean);
+		} else if (typeof tags === 'number' || typeof tags === 'boolean') {
 			newTags = [String(tags).trim()].filter(Boolean);
 		}
 

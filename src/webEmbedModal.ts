@@ -1,4 +1,4 @@
-import { App, Modal, Notice, Setting, TFile } from 'obsidian';
+import { App, Modal, Notice, Setting } from 'obsidian';
 import { getActiveCanvas } from './canvasNodeCreate';
 
 export class WebEmbedModal extends Modal {
@@ -13,7 +13,7 @@ export class WebEmbedModal extends Modal {
 	onOpen(): void {
 		const { contentEl } = this;
 		contentEl.empty();
-		this.titleEl.setText('Add Web Audio/Video Embed');
+		this.titleEl.setText('Add web audio/video embed');
 
 		// Tab headers
 		const tabHeaders = contentEl.createDiv({ cls: 'muse-modal-tabs' });
@@ -36,26 +36,26 @@ export class WebEmbedModal extends Modal {
 			if (this.activeTab === 'auto') {
 				new Setting(tabContent)
 					.setName('Web URL')
-					.setDesc('Paste a link from Spotify, YouTube, or Google Drive (e.g., share links).')
+					.setDesc('Paste a link from spotify, YouTube, or Google Drive (e.g., share links).')
 					.addText((text) =>
 						text
-							.setPlaceholder('https://open.spotify.com/track/...')
+							.setPlaceholder('HTTPS://open.spotify.com/track/...')
 							.setValue(this.urlInput)
 							.onChange((val) => {
 								this.urlInput = val;
 							}),
 					);
 
-				const btnSetting = new Setting(tabContent).addButton((btn) =>
+				new Setting(tabContent).addButton((btn) =>
 					btn
-						.setButtonText('Add to Canvas')
+						.setButtonText('Add to canvas')
 						.setCta()
 						.onClick(() => {
 							this.handleAddUrl();
 						}),
 				);
 			} else {
-				tabContent.createEl('label', { text: 'Iframe Embed Code:', cls: 'muse-tm-label' });
+				tabContent.createEl('label', { text: 'Iframe embed code:', cls: 'muse-tm-label' });
 				const txt = tabContent.createEl('textarea', {
 					cls: 'muse-tm-textarea',
 					attr: { placeholder: '<iframe ...></iframe>' },
@@ -67,7 +67,7 @@ export class WebEmbedModal extends Modal {
 
 				new Setting(tabContent).addButton((btn) =>
 					btn
-						.setButtonText('Add to Canvas')
+						.setButtonText('Add to canvas')
 						.setCta()
 						.onClick(() => {
 							this.handleAddManual();
@@ -102,7 +102,7 @@ export class WebEmbedModal extends Modal {
 
 		const embedHtml = this.parseUrlToEmbed(rawUrl);
 		if (!embedHtml) {
-			new Notice('Unsupported URL format. Try using "Pasted Iframe Code" instead.');
+			new Notice('Unsupported URL format. Try using "pasted iframe code" instead.');
 			return;
 		}
 
@@ -167,8 +167,8 @@ export class WebEmbedModal extends Modal {
 					// Video embed
 					return `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
 				}
-			} catch (e) {
-				// Fall through
+			} catch {
+				// fall through
 			}
 		}
 
@@ -187,7 +187,9 @@ export class WebEmbedModal extends Modal {
 				try {
 					const parsed = new URL(url);
 					fileId = parsed.searchParams.get('id');
-				} catch (e) {}
+				} catch {
+				// ignore malformed URL
+			}
 			}
 
 			if (fileId) {
@@ -217,7 +219,9 @@ export class WebEmbedModal extends Modal {
 				const src = iframe.getAttribute('src');
 				if (src) return src;
 			}
-		} catch (e) {}
+		} catch {
+			// ignore parse errors
+		}
 
 		const match = html.match(/<iframe[^>]*\bsrc=["']([^"']+)["']/i);
 		return (match && match[1]) ? match[1] : null;
@@ -236,8 +240,8 @@ export class WebEmbedModal extends Modal {
 			y: viewport.y + viewport.height / 2 - 150,
 		};
 
-		// Cast UndocumentedCanvas to any to invoke createLinkNode/createTextNode safely
-		const canvas = active.canvas as any;
+		// Use UndocumentedCanvas API to insert the node
+		const canvas = active.canvas;
 		const srcUrl = this.extractSrcFromIframe(embedHtml);
 
 		if (srcUrl && typeof canvas.createLinkNode === 'function') {
@@ -260,7 +264,7 @@ export class WebEmbedModal extends Modal {
 			canvas.requestSave?.();
 			new Notice('Web embed card added to canvas!');
 		} else {
-			new Notice('Could not insert node: Canvas API is not supported on this version of Obsidian Canvas.');
+			new Notice('Could not insert node: Canvas API is not supported on this version of Obsidian canvas.');
 		}
 	}
 }

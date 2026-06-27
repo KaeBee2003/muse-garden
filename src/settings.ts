@@ -132,32 +132,10 @@ export class MuseGardenSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		new Setting(containerEl).setName('Muse Garden').setHeading();
-		containerEl.createEl('p', {
-			text:
-				'Add the folders where your FL Studio projects or audio exports live. ' +
-				'Muse Garden links each one into your vault (via a symlink) so Obsidian ' +
-				'and Canvas can browse and play the files natively.',
-			cls: 'setting-item-description',
-		});
-
-		new Setting(containerEl)
-			.setName('Add a folder')
-			.setDesc('Pick an external folder to watch.')
-			.addButton((btn) =>
-				btn
-					.setButtonText('Choose folder…')
-					.setCta()
-					.onClick(() => {
-						void this.pickAndAddDirectory();
-					}),
-			);
-
-		// ── Tag Visibility ───────────────────────────────────────────────────
 		new Setting(containerEl).setName('Tag visibility').setHeading();
 
 		new Setting(containerEl)
-			.setName('Show tags on Audio nodes (canvas)')
+			.setName('Show tags on audio nodes (canvas)')
 			.setDesc('Display tag chips directly on audio file nodes on the canvas.')
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.showTagsOnAudioNodes).onChange(async (value) => {
@@ -168,7 +146,7 @@ export class MuseGardenSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Show tags on Project nodes (canvas)')
+			.setName('Show tags on project nodes (canvas)')
 			.setDesc('Show the project folder\'s own tags on its canvas card header.')
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.showTagsOnProjectNodes).onChange(async (value) => {
@@ -180,7 +158,7 @@ export class MuseGardenSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Show tags in audio list of a project (canvas)')
-			.setDesc('Show each track\'s tags inside the audio list of a Project canvas node.')
+			.setDesc('Show each track\'s tags inside the audio list of a project canvas node.')
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.showTagsInProjectAudioList).onChange(async (value) => {
 					this.plugin.settings.showTagsInProjectAudioList = value;
@@ -190,8 +168,8 @@ export class MuseGardenSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Show tags in Explorer')
-			.setDesc('Display tag chips on track and folder rows in the Explorer sidebar.')
+			.setName('Show tags in explorer')
+			.setDesc('Display tag chips on track and folder rows in the explorer sidebar.')
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.showTagsInExplorer).onChange(async (value) => {
 					this.plugin.settings.showTagsInExplorer = value;
@@ -202,7 +180,7 @@ export class MuseGardenSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Show tags in search results')
-			.setDesc('Display tag chips on tracks when a search is active in the Explorer.')
+			.setDesc('Display tag chips on tracks when a search is active in the explorer.')
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.showTagsInSearchResults).onChange(async (value) => {
 					this.plugin.settings.showTagsInSearchResults = value;
@@ -224,6 +202,26 @@ export class MuseGardenSettingTab extends PluginSettingTab {
 
 		// ── Watched folders ──────────────────────────────────────────────────
 		new Setting(containerEl).setName('Watched folders').setHeading();
+
+		containerEl.createEl('p', {
+			text:
+				'Add the folders where your FL Studio projects or audio exports live. ' +
+				'Muse Garden links each one into your vault (via a symlink) so Obsidian ' +
+				'and Canvas can browse and play the files natively.',
+			cls: 'setting-item-description',
+		});
+
+		new Setting(containerEl)
+			.setName('Add a folder')
+			.setDesc('Pick an external folder to watch.')
+			.addButton((btn) =>
+				btn
+					.setButtonText('Choose folder…')
+					.setCta()
+					.onClick(() => {
+						void this.pickAndAddDirectory();
+					}),
+			);
 
 		if (this.plugin.settings.directories.length === 0) {
 			containerEl.createEl('p', {
@@ -266,11 +264,8 @@ export class MuseGardenSettingTab extends PluginSettingTab {
 		// Electron's dialog is reachable from the renderer via window.require in
 		// Obsidian desktop. This is a deliberate, narrow use of an Electron API
 		// that isn't part of Obsidian's public typings (see ElectronDialog above).
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-		const electronRequire = (window as any).require as
-			| ((id: string) => ElectronRendererModule)
-			| undefined;
-		const electron = electronRequire?.('electron');
+		const electronRequire = (window as unknown as { require?: (id: string) => unknown }).require;
+		const electron = electronRequire?.('electron') as ElectronRendererModule | undefined;
 		if (!electron) {
 			new Notice('Folder picker is only available on desktop.');
 			return;

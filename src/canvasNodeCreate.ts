@@ -2,6 +2,33 @@ import { ItemView, Notice, TFile, WorkspaceLeaf } from 'obsidian';
 import type { App } from 'obsidian';
 
 /**
+ * Minimal typed shape for a canvas node from the undocumented runtime API.
+ * All properties are optional because the node type (text, file, link, group)
+ * determines which ones are present.
+ */
+export interface UndocumentedCanvasNode {
+	/** The TFile for a "file" node, or a path-like object. */
+	file?: TFile | { path?: string; filePath?: string } | string;
+	/** Vault-relative path to the embedded file. */
+	filePath?: string;
+	/** The node's rendered DOM element. */
+	nodeEl?: HTMLElement;
+	/** Raw text content for "text" nodes. */
+	text?: string;
+	/** Node id used in the canvas JSON. */
+	id?: string;
+}
+
+/** Minimal typed shape for a canvas edge. */
+export interface UndocumentedCanvasEdge {
+	from?: { node?: { id?: string }; id?: string };
+	fromNode?: { id?: string };
+	to?: { node?: { id?: string }; id?: string };
+	toNode?: { id?: string };
+	[key: string]: unknown;
+}
+
+/**
  * Minimal shape of the undocumented `Canvas` runtime object exposed as
  * `(canvasLeafView).canvas`. Obsidian does not publish a typed/documented
  * API for mutating an already-open canvas — only the on-disk .canvas JSON
@@ -12,9 +39,17 @@ import type { App } from 'obsidian';
 export interface UndocumentedCanvas {
 	viewportBounds?: () => { x: number; y: number; width: number; height: number };
 	createFileNode: (options: { file: TFile; pos: { x: number; y: number } }) => void;
+	createLinkNode?: (options: { url: string; pos: { x: number; y: number }; size: { width: number; height: number }; save: boolean; focus: boolean }) => void;
+	createTextNode?: (options: { pos: { x: number; y: number }; size: { width: number; height: number }; text: string; focus: boolean }) => void;
 	requestSave?: () => void;
 	/** The pannable/zoomable inner element; its CSS transform encodes canvas-space <-> screen-space conversion. */
 	canvasEl?: HTMLElement;
+	/** Active filter tags set by the Muse Garden filter button. */
+	activeFilterTags?: Set<string>;
+	/** All nodes on the canvas, keyed by node id. */
+	nodes?: Map<string, UndocumentedCanvasNode>;
+	/** All edges on the canvas, keyed by edge id. */
+	edges?: Map<string, UndocumentedCanvasEdge>;
 }
 
 export interface ActiveCanvas {
@@ -51,7 +86,7 @@ export function screenToCanvasPos(
 	screenX: number,
 	screenY: number,
 ): { x: number; y: number } | null {
-	const canvasEl = containerEl.querySelector('.canvas') as HTMLElement | null;
+	const canvasEl = containerEl.querySelector('.canvas');
 	if (!canvasEl) return null;
 
 	const rect = canvasEl.getBoundingClientRect();
