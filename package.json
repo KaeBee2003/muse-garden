@@ -1,6 +1,6 @@
 {
 	"name": "muse-garden",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Brainstorm music ideas in Obsidian: browse FL Studio project audio, tag tracks, and drop Project/Audio nodes onto Canvas with a built-in player.",
 	"main": "main.js",
 	"type": "module",

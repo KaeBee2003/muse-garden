@@ -1,7 +1,7 @@
 {
 	"id": "muse-garden",
 	"name": "Muse Garden",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "1.7.2",
 	"description": "Brainstorm music ideas: browse your FL Studio / audio project folders, tag and search tracks, and drop Project/Audio nodes onto Canvas with a built-in player.",
 	"author": "Karthik Balaji",
