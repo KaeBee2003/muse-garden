@@ -4,8 +4,6 @@ Brainstorm music ideas directly inside Obsidian. Browse your audio project folde
 
 <img width="1251" height="1004" alt="image" src="https://github.com/user-attachments/assets/b9636582-a380-42eb-8b0a-0e54bf88ce48" />
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F4F4224N1H)
-
 ---
 
 Muse Garden is built for music producers, sound designers, and composers who want to organize their music ideas, tracks, and project files alongside their notes. 
