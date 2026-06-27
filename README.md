@@ -2,6 +2,8 @@
 
 Brainstorm music ideas directly inside Obsidian. Browse your audio project folders, tag and search tracks, and place Project/Audio nodes onto Obsidian Canvas with a built-in player.
 
+<img width="1251" height="1004" alt="image" src="https://github.com/user-attachments/assets/b9636582-a380-42eb-8b0a-0e54bf88ce48" />
+
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F4F4224N1H)
 
 ---
