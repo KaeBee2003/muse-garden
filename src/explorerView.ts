@@ -178,7 +178,7 @@ export class MuseExplorerView extends ItemView {
 		const isExpanded = forceExpanded || this.expandedFolders.has(folder.vaultPath);
 
 		const row = this.listEl.createDiv({ cls: 'muse-folder-row' });
-		row.style.setProperty('--muse-depth', String(depth));
+		row.setCssProps({ '--muse-depth': String(depth) });
 		row.setAttribute('draggable', 'true');
 
 		const chevron = row.createSpan({ cls: 'muse-folder-chevron' });
@@ -267,7 +267,7 @@ export class MuseExplorerView extends ItemView {
 
 	private renderTrackRow(track: AudioTrack, depth: number): void {
 		const row = this.listEl.createDiv({ cls: 'muse-track-row' });
-		row.style.setProperty('--muse-depth', String(depth));
+		row.setCssProps({ '--muse-depth': String(depth) });
 		row.dataset.path = track.vaultPath;
 		row.setAttribute('draggable', 'true');
 
